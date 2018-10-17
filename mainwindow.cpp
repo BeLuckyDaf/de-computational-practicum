@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->domainToSpinBox->setValue(xFinal + 1);
     ui->rangeFromSpinBox->setValue(0);
 
+    computer = new Computer();
+
     setup();
     draw();
 }
@@ -48,9 +50,9 @@ void MainWindow::draw()
     qreal step = ui->stepSpinBox->value();
 
     /* computing and adding series */
-    ui->lineChartView->chart()->addSeries(ComputeEuler(xInitial, xFinal, step, yInitial));
-    ui->lineChartView->chart()->addSeries(ComputeImprovedEuler(xInitial, xFinal, step, yInitial));
-    ui->lineChartView->chart()->addSeries(ComputeRungeKutta(xInitial, xFinal, step, yInitial));
+    ui->lineChartView->chart()->addSeries(computer->ComputeEuler(xInitial, xFinal, step, yInitial));
+    ui->lineChartView->chart()->addSeries(computer->ComputeImprovedEuler(xInitial, xFinal, step, yInitial));
+    ui->lineChartView->chart()->addSeries(computer->ComputeRungeKutta(xInitial, xFinal, step, yInitial));
 
     /* setting up the chart */
     ui->lineChartView->chart()->createDefaultAxes();
@@ -72,63 +74,7 @@ void MainWindow::zoom() {
     ui->lineChartView->chart()->axisY()->setRange(yFrom, yTo);
 }
 
-/** Euler Method */
-QLineSeries *MainWindow::ComputeEuler(qreal from, qreal to, qreal step, qreal y0) // y' = x^3y^4 - y/x
-{
-    QLineSeries* series = new QLineSeries();
-    series->setName("Euler");
-    series->append(from, y0);
-
-    qreal yp = y0;
-    for (qreal x = from + step; x < to; x += step) {
-        qreal y = yp + step * DE_FUNCTION(x, yp);
-        series->append(x, y);
-    }
-
-    return series;
-}
-
-/** Imroved Euler (Heun) Method */
-QLineSeries *MainWindow::ComputeImprovedEuler(qreal from, qreal to, qreal step, qreal y0)
-{
-    QLineSeries* series = new QLineSeries();
-    series->setName("Heun");
-    series->append(from, y0);
-
-    qreal y = y0;
-    for (qreal x = from; x < to; x += step) {
-        qreal xj = x + step;
-        qreal m1 = DE_FUNCTION(x, y);
-        qreal m2 = DE_FUNCTION(xj, y + step*m1);
-        qreal yj = y + step*(m1 + m2)/2;
-        series->append(xj, yj);
-    }
-
-    return series;
-}
-
-/** Runge Kutta Method */
-QLineSeries *MainWindow::ComputeRungeKutta(qreal from, qreal to, qreal step, qreal y0)
-{
-    QLineSeries* series = new QLineSeries();
-    series->setName("Runge Kutta");
-    series->append(from, y0);
-
-    qreal y = y0;
-    for (qreal x = from; x < to; x += step) {
-        qreal xj = x + step;
-        qreal k1 = step*DE_FUNCTION(x, y);
-        qreal k2 = step*DE_FUNCTION(x + step/2, y + k1/2);
-        qreal k3 = step*DE_FUNCTION(x + step/2, y + k2/2);
-        qreal k4 = step*DE_FUNCTION(x + step, y + k3);
-        qreal yj = y + k1/6 + k2/3 + k3/3 + k4/6;
-        series->append(xj, yj);
-    }
-
-    return series;
-}
-
-/** Redraw */
+/** Redraw (Draw button) */
 void MainWindow::on_pushButton_clicked()
 {
     draw();
@@ -140,28 +86,28 @@ void MainWindow::on_ZoomButton_clicked()
     zoom();
 }
 
-/** SpinBox Constraints */
+/** Domain SpinBox Lower Bound */
 void MainWindow::on_domainFromSpinBox_valueChanged(double arg1)
 {
     double val = ui->domainToSpinBox->value();
     if (arg1 > val) ui->domainFromSpinBox->setValue(val);
 }
 
-/** SpinBox Constraints */
+/** Domain SpinBox Upper Bound */
 void MainWindow::on_domainToSpinBox_valueChanged(double arg1)
 {
     double val = ui->domainFromSpinBox->value();
     if (arg1 < val) ui->domainToSpinBox->setValue(val);
 }
 
-/** SpinBox Constraints */
+/** Range SpinBox Lower Bound */
 void MainWindow::on_rangeFromSpinBox_valueChanged(double arg1)
 {
     double val = ui->rangeToSpinBox->value();
     if (arg1 > val) ui->rangeFromSpinBox->setValue(val);
 }
 
-/** SpinBox Constraints */
+/** Range SpinBox Upper Bound */
 void MainWindow::on_rangeToSpinBox_valueChanged(double arg1)
 {
     double val = ui->rangeFromSpinBox->value();

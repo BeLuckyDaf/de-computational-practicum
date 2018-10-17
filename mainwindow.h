@@ -1,8 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-// The main window to which you add toolbars,
-// menubars, widgets and status bar
+#include "computer.h"
+
 #include <QtWidgets/QMainWindow>
 #include <QApplication>
 #include <QtCharts/QChartView>
@@ -12,8 +12,6 @@
 #include <QtCharts/QCategoryAxis>
 #include <QDebug>
 #include <QtMath>
-
-#define DE_FUNCTION(X, Y) ( (qPow((Y), 4)*qCos((X))) + ((Y) * qTan((X))) )
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -44,6 +42,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    Computer *computer;
 
     void setup();
     void draw();
