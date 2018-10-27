@@ -11,9 +11,10 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QCategoryAxis>
 #include <QDebug>
-#include <QtMath>
 
 QT_CHARTS_USE_NAMESPACE
+
+#define DEFAULT_GRID_DENSITY 10
 
 namespace Ui {
 class MainWindow;
@@ -40,21 +41,36 @@ private slots:
 
     void on_rangeToSpinBox_valueChanged(double arg1);
 
+    void on_yInitialSpinBox_valueChanged(double arg1);
+
+    void on_xInitialSpinBox_valueChanged(double arg1);
+
+    void on_xFinalSpinBox_valueChanged(double arg1);
+
+    void on_gridDensitySpinBox_valueChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
+
+    QChart *mainChart, *errorChart;
     Computer *computer;
 
     void setup();
     void draw();
     void zoom();
+    void changeGridDensity(int density);
 
-    QLineSeries* ComputeEuler(qreal from, qreal to, qreal step, qreal y0);
-    QLineSeries* ComputeImprovedEuler(qreal from, qreal to, qreal step, qreal y0);
-    QLineSeries* ComputeRungeKutta(qreal from, qreal to, qreal step, qreal y0);
+    QLineSeries* computeEuler(qreal from, qreal to, qreal step, qreal y0);
+    QLineSeries* computeImprovedEuler(qreal from, qreal to, qreal step, qreal y0);
+    QLineSeries* computeRungeKutta(qreal from, qreal to, qreal step, qreal y0);
 
-    const qreal xInitial = 0;
-    const qreal yInitial = 1;
-    const qreal xFinal = 9.5;
+    QValueAxis* mainAxisX, *errorAxisX;
+    QValueAxis* mainAxisY, *errorAxisY;
+
+    qreal xInitial = 0;
+    qreal yInitial = 1;
+    qreal xFinal = 9.5;
+
 };
 
 #endif // MAINWINDOW_H
