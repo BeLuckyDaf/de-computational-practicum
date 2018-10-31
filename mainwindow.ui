@@ -59,6 +59,12 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>400</height>
+       </size>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -66,6 +72,16 @@
        <number>2</number>
       </property>
       <layout class="QGridLayout" name="gridLayout">
+       <property name="topMargin">
+        <number>9</number>
+       </property>
+       <item row="12" column="0">
+        <widget class="Line" name="horizontalLineBot">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
        <item row="5" column="0">
         <layout class="QHBoxLayout" name="xInitialLayout">
          <item>
@@ -99,6 +115,13 @@
          </item>
         </layout>
        </item>
+       <item row="9" column="0">
+        <widget class="Line" name="horizontalLineTop">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
        <item row="4" column="0">
         <layout class="QHBoxLayout" name="yInitialLayout">
          <item>
@@ -126,48 +149,12 @@
          </item>
         </layout>
        </item>
-       <item row="9" column="0">
-        <widget class="Line" name="horizontalLine">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="0">
-        <layout class="QHBoxLayout" name="zoomSubmitLayout">
-         <property name="spacing">
-          <number>12</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QPushButton" name="ZoomButton">
-           <property name="minimumSize">
-            <size>
-             <width>80</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>150</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Zoom</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
        <item row="1" column="0">
         <layout class="QHBoxLayout" name="StepLayout">
          <item>
           <widget class="QLabel" name="stepLabel">
            <property name="text">
-            <string>Step</string>
+            <string>h</string>
            </property>
           </widget>
          </item>
@@ -207,6 +194,35 @@
          </item>
         </layout>
        </item>
+       <item row="16" column="0">
+        <layout class="QHBoxLayout" name="zoomSubmitLayout">
+         <property name="spacing">
+          <number>12</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="ZoomButton">
+           <property name="minimumSize">
+            <size>
+             <width>80</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Zoom</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item row="6" column="0">
         <layout class="QHBoxLayout" name="xFinalLayout">
          <item>
@@ -240,7 +256,7 @@
          </item>
         </layout>
        </item>
-       <item row="11" column="0">
+       <item row="14" column="0">
         <layout class="QHBoxLayout" name="rangeLayout">
          <item>
           <widget class="QLabel" name="rangeLabel">
@@ -273,7 +289,7 @@
             <double>0.500000000000000</double>
            </property>
            <property name="value">
-            <double>0.000000000000000</double>
+            <double>-15.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -307,7 +323,81 @@
          </item>
         </layout>
        </item>
-       <item row="10" column="0">
+       <item row="7" column="0">
+        <layout class="QHBoxLayout" name="drawSubmitLayout">
+         <item>
+          <widget class="QPushButton" name="pushButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>80</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="text">
+            <string>Redraw</string>
+           </property>
+           <property name="default">
+            <bool>false</bool>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="11" column="0">
+        <layout class="QHBoxLayout" name="gridDensityLayout">
+         <item>
+          <widget class="QLabel" name="gridDensityLabel">
+           <property name="text">
+            <string>Grid density</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="gridDensitySpinBox">
+           <property name="minimumSize">
+            <size>
+             <width>80</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>80</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="value">
+            <number>10</number>
+           </property>
+           <property name="displayIntegerBase">
+            <number>10</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="13" column="0">
         <layout class="QHBoxLayout" name="domainLayout">
          <item>
           <widget class="QLabel" name="label">
@@ -360,80 +450,6 @@
            </property>
            <property name="value">
             <double>1.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="7" column="0">
-        <layout class="QHBoxLayout" name="drawSubmitLayout">
-         <item>
-          <widget class="QPushButton" name="pushButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>80</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>150</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::LeftToRight</enum>
-           </property>
-           <property name="text">
-            <string>Redraw</string>
-           </property>
-           <property name="default">
-            <bool>false</bool>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="12" column="0">
-        <layout class="QHBoxLayout" name="gridDensityLayout">
-         <item>
-          <widget class="QLabel" name="gridDensityLabel">
-           <property name="text">
-            <string>Grid density</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="gridDensitySpinBox">
-           <property name="minimumSize">
-            <size>
-             <width>80</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>80</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="value">
-            <number>10</number>
-           </property>
-           <property name="displayIntegerBase">
-            <number>10</number>
            </property>
           </widget>
          </item>

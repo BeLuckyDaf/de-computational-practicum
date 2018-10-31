@@ -71,25 +71,36 @@ void MainWindow::draw()
 
     qreal C1 = (qPow(y0, 3) * qCos(x0) * qCos(x0) * qSin(x0) + 1)/(qPow(y0, 3) * qCos(xFrom) * qCos(x0) * qCos(x0));
     computer->setC1(C1);
-    QLineSeries** euler = computer->ComputeEuler(x0, X, step, y0);
-    QLineSeries** heun = computer->ComputeImprovedEuler(x0, X, step, y0);
+    struct CompleteSeries euler = computer->ComputeEuler(x0, X, step, y0);
+    struct CompleteSeries heun = computer->ComputeImprovedEuler(x0, X, step, y0);
     QLineSeries** rungekutta = computer->ComputeRungeKutta(x0, X, step, y0);
-    QLineSeries* exact = computer->ComputeExact(x0, X, step);
+    std::queue<QLineSeries*> exact = computer->ComputeExact(x0, X, step);
+
+    while(!euler.values.empty()) {
+        mainChart->addSeries(euler.values.front());
+        euler.values.pop();
+    }
+
+    while(!exact.empty()) {
+        mainChart->addSeries(exact.front());
+        exact.pop();
+    }
+
+    while(!heun.values.empty()) {
+        mainChart->addSeries(heun.values.front());
+        heun.values.pop();
+    }
 
     /* computing and adding series */
-    mainChart->addSeries(euler[0]);
-    mainChart->addSeries(heun[0]);
     mainChart->addSeries(rungekutta[0]);
-    mainChart->addSeries(exact);
-    errorChart->addSeries(euler[1]);
-    errorChart->addSeries(heun[1]);
+    errorChart->addSeries(euler.errors);
+    errorChart->addSeries(heun.errors);
     errorChart->addSeries(rungekutta[1]);
 
     changeGridDensity(ui->gridDensitySpinBox->value());
 
     mainChart->axisX()->setRange(xFrom, xTo);
     mainChart->axisY()->setRange(yFrom, yTo);
-
     errorChart->axisX()->setRange(xFrom, xTo);
     errorChart->axisY()->setRange(yFrom, yTo);
 }
@@ -110,6 +121,7 @@ void MainWindow::zoom() {
     ui->errorLineChart->chart()->axisY()->setRange(yFrom, yTo);
 }
 
+/** Change Grid Density */
 void MainWindow::changeGridDensity(int density)
 {
     mainAxisX = new QValueAxis();
@@ -126,7 +138,6 @@ void MainWindow::changeGridDensity(int density)
 
     mainChart->setAxisX(mainAxisX);
     mainChart->setAxisY(mainAxisY);
-
     errorChart->setAxisX(errorAxisX);
     errorChart->setAxisY(errorAxisY);
 
