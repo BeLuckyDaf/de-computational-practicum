@@ -9,7 +9,7 @@
 
 QT_CHARTS_USE_NAMESPACE
 
-#define DE_FUNCTION(X, Y) ( -2 * (Y) + 4*(X) )
+#define DE_FUNCTION(X, Y) ( ((-2)*(Y)) + (4*(X)) )
 
 struct ExactPoint {
     bool valid;
@@ -17,8 +17,9 @@ struct ExactPoint {
 };
 
 struct CompleteSeries {
-    std::queue<QLineSeries*> values;
+    QLineSeries* values;
     QLineSeries* errors;
+    uint totalError;
 };
 
 class Computer
@@ -31,8 +32,8 @@ public:
 
     struct CompleteSeries ComputeEuler(qreal from, qreal to, qreal step, qreal y0);
     struct CompleteSeries ComputeImprovedEuler(qreal from, qreal to, qreal step, qreal y0);
-    QLineSeries** ComputeRungeKutta(qreal from, qreal to, qreal step, qreal y0);
-    std::queue<QLineSeries*> ComputeExact(qreal from, qreal to, qreal step);
+    struct CompleteSeries ComputeRungeKutta(qreal from, qreal to, qreal step, qreal y0);
+    QLineSeries* ComputeExact(qreal from, qreal to, qreal step);
     struct ExactPoint ComputePointExact(qreal x);
     void setC1(const qreal &value);
     qreal length(qreal x1, qreal y1, qreal x2, qreal y2);

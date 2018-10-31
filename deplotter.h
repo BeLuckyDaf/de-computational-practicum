@@ -68,9 +68,8 @@ private:
     QValueAxis* mainAxisY, *errorAxisY;
 
     qreal xInitial = 0;
-    qreal yInitial = 1;
-    qreal xFinal = 9.5;
-
+    qreal yInitial = 0;
+    qreal xFinal = 3;
 };
 
 #endif // MAINWINDOW_H

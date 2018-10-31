@@ -69,36 +69,31 @@ void MainWindow::draw()
     ui->errorLineChart->chart()->removeAllSeries();
     qreal step = ui->stepSpinBox->value();
 
+    // setting the constant for the exact solution
     qreal C1 = (qPow(y0, 3) * qCos(x0) * qCos(x0) * qSin(x0) + 1)/(qPow(y0, 3) * qCos(xFrom) * qCos(x0) * qCos(x0));
     computer->setC1(C1);
+
+    // computing the values using different methods
     struct CompleteSeries euler = computer->ComputeEuler(x0, X, step, y0);
     struct CompleteSeries heun = computer->ComputeImprovedEuler(x0, X, step, y0);
-    QLineSeries** rungekutta = computer->ComputeRungeKutta(x0, X, step, y0);
-    std::queue<QLineSeries*> exact = computer->ComputeExact(x0, X, step);
+    struct CompleteSeries rungekutta = computer->ComputeRungeKutta(x0, X, step, y0);
+    QLineSeries* exact = computer->ComputeExact(x0, X, step);
 
-    while(!euler.values.empty()) {
-        mainChart->addSeries(euler.values.front());
-        euler.values.pop();
-    }
+    // values
+    mainChart->addSeries(euler.values);
+    mainChart->addSeries(exact);
+    mainChart->addSeries(heun.values);
+    mainChart->addSeries(rungekutta.values);
 
-    while(!exact.empty()) {
-        mainChart->addSeries(exact.front());
-        exact.pop();
-    }
-
-    while(!heun.values.empty()) {
-        mainChart->addSeries(heun.values.front());
-        heun.values.pop();
-    }
-
-    /* computing and adding series */
-    mainChart->addSeries(rungekutta[0]);
+    // errors
     errorChart->addSeries(euler.errors);
     errorChart->addSeries(heun.errors);
-    errorChart->addSeries(rungekutta[1]);
+    errorChart->addSeries(rungekutta.errors);
 
+    // setting the grid density
     changeGridDensity(ui->gridDensitySpinBox->value());
 
+    // setting the range and the domain of the chart
     mainChart->axisX()->setRange(xFrom, xTo);
     mainChart->axisY()->setRange(yFrom, yTo);
     errorChart->axisX()->setRange(xFrom, xTo);
