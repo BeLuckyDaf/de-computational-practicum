@@ -38,7 +38,7 @@ struct CompleteSeries Computer::ComputeEuler(qreal from, qreal to, qreal step, q
         series[0]->append(x, y);
         err = qAbs(ComputePointExact(x).y - y);
         series[1]->append(x, err);
-        complete.totalError += err;
+        complete.totalError += err * step;
         yp = y;
     }
 
@@ -74,7 +74,7 @@ struct CompleteSeries Computer::ComputeImprovedEuler(qreal from, qreal to, qreal
         series[0]->append(xj, y);
         err = qAbs(ComputePointExact(x).y - y);
         series[1]->append(x, err);
-        complete.totalError += err;
+        complete.totalError += err * step;
     }
 
     complete.values = series[0];
@@ -88,6 +88,8 @@ struct CompleteSeries Computer::ComputeImprovedEuler(qreal from, qreal to, qreal
 /** Runge Kutta Method */
 struct CompleteSeries Computer::ComputeRungeKutta(qreal from, qreal to, qreal step, qreal y0)
 {
+    // creating an array of line series (points drawn in the graph)
+    // we need one for the equation itself and one for errors
     QLineSeries** series = new QLineSeries*[2];
     series[0] = new QLineSeries();
     series[0]->setName("Runge Kutta");
@@ -96,9 +98,11 @@ struct CompleteSeries Computer::ComputeRungeKutta(qreal from, qreal to, qreal st
     series[1]->setName("Runge Kutta");
     series[1]->append(from, 0);
 
+    // this struct simply contains two of those line series
     struct CompleteSeries complete;
     complete.totalError = 0;
 
+    // here is the standard implementation of Runge-Kutta
     qreal y = y0, err;
     for (qreal x = from; x < to; x += step) {
         qreal xj = x + step;
@@ -108,16 +112,22 @@ struct CompleteSeries Computer::ComputeRungeKutta(qreal from, qreal to, qreal st
         qreal k4 = step*DE_FUNCTION(x + step, y + k3);
         y = y + k1/6 + k2/3 + k3/3 + k4/6;
 
-
+        // add the result to the point array
         series[0]->append(xj, y);
+
+        // compute the error and add it as well
         err = qAbs(ComputePointExact(x).y - y);
         series[1]->append(x, err);
-        complete.totalError += err;
+
+        // add the current local error to the total
+        complete.totalError += err * step;
     }
 
+    // initialize the struct
     complete.values = series[0];
     complete.errors = series[1];
 
+    // tell the programmer that we're done here
     qDebug() << "Computed Runge-Kutta.";
 
     return complete;
