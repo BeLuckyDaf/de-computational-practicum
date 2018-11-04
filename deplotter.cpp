@@ -81,9 +81,9 @@ void MainWindow::draw()
 
     // values
     mainChart->addSeries(euler.values);
-    mainChart->addSeries(exact);
     mainChart->addSeries(heun.values);
     mainChart->addSeries(rungekutta.values);
+    mainChart->addSeries(exact);
 
     // errors
     errorChart->addSeries(euler.errors);

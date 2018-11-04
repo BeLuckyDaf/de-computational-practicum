@@ -11,15 +11,15 @@ QT_CHARTS_USE_NAMESPACE
 
 #define DE_FUNCTION(X, Y) ( ((-2)*(Y)) + (4*(X)) )
 
-struct ExactPoint {
-    bool valid;
-    qreal y;
-};
-
 struct CompleteSeries {
     QLineSeries* values;
     QLineSeries* errors;
-    uint totalError;
+    qreal totalError;
+};
+
+struct ExactPoint {
+    bool valid;
+    qreal y;
 };
 
 class Computer

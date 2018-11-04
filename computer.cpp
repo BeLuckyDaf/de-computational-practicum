@@ -19,11 +19,12 @@ qreal Computer::length(qreal x1, qreal y1, qreal x2, qreal y2)
 /** Euler Method */
 struct CompleteSeries Computer::ComputeEuler(qreal from, qreal to, qreal step, qreal y0) // y' = x^3y^4 - y/x
 {
+    char errName[100] = "";
+
     QLineSeries** series = new QLineSeries*[2];
     series[0] = new QLineSeries();
     series[1] = new QLineSeries();
     series[0]->setName("Euler");
-    series[1]->setName("Euler");
     series[0]->append(from, y0);
     series[1]->append(from, 0);
 
@@ -32,15 +33,18 @@ struct CompleteSeries Computer::ComputeEuler(qreal from, qreal to, qreal step, q
 
     qreal yp = y0;
     qreal err;
-    for (qreal x = from + step; x < to; x += step) {
+    for (qreal x = from + step; x <= to; x += step) {
         qreal y = yp + step * DE_FUNCTION(x, yp);
 
         series[0]->append(x, y);
         err = qAbs(ComputePointExact(x).y - y);
         series[1]->append(x, err);
-        complete.totalError += err * step;
+        complete.totalError += (err * step);
         yp = y;
     }
+
+    sprintf(errName, "Euler (%.4f)", complete.totalError);
+    series[1]->setName(errName);
 
     complete.values = series[0];
     complete.errors = series[1];
@@ -53,12 +57,13 @@ struct CompleteSeries Computer::ComputeEuler(qreal from, qreal to, qreal step, q
 /** Imroved Euler (Heun) Method */
 struct CompleteSeries Computer::ComputeImprovedEuler(qreal from, qreal to, qreal step, qreal y0)
 {
+    char errName[100] = "";
+
     QLineSeries** series = new QLineSeries*[2];
     series[0] = new QLineSeries();
     series[0]->setName("Heun");
     series[0]->append(from, y0);
     series[1] = new QLineSeries();
-    series[1]->setName("Heun");
     series[1]->append(from, 0);
 
     struct CompleteSeries complete;
@@ -72,10 +77,13 @@ struct CompleteSeries Computer::ComputeImprovedEuler(qreal from, qreal to, qreal
         y = y + step*(m1 + m2)/2;
 
         series[0]->append(xj, y);
-        err = qAbs(ComputePointExact(x).y - y);
-        series[1]->append(x, err);
-        complete.totalError += err * step;
+        err = qAbs(ComputePointExact(xj).y - y);
+        series[1]->append(xj, err);
+        complete.totalError += (err * step);
     }
+
+    sprintf(errName, "Heun (%.4f)", complete.totalError);
+    series[1]->setName(errName);
 
     complete.values = series[0];
     complete.errors = series[1];
@@ -88,6 +96,9 @@ struct CompleteSeries Computer::ComputeImprovedEuler(qreal from, qreal to, qreal
 /** Runge Kutta Method */
 struct CompleteSeries Computer::ComputeRungeKutta(qreal from, qreal to, qreal step, qreal y0)
 {
+    // title for the error chart
+    char errName[100] = "";
+
     // creating an array of line series (points drawn in the graph)
     // we need one for the equation itself and one for errors
     QLineSeries** series = new QLineSeries*[2];
@@ -95,10 +106,10 @@ struct CompleteSeries Computer::ComputeRungeKutta(qreal from, qreal to, qreal st
     series[0]->setName("Runge Kutta");
     series[0]->append(from, y0);
     series[1] = new QLineSeries();
-    series[1]->setName("Runge Kutta");
     series[1]->append(from, 0);
 
     // this struct simply contains two of those line series
+    // and a double variable for the total error
     struct CompleteSeries complete;
     complete.totalError = 0;
 
@@ -116,19 +127,22 @@ struct CompleteSeries Computer::ComputeRungeKutta(qreal from, qreal to, qreal st
         series[0]->append(xj, y);
 
         // compute the error and add it as well
-        err = qAbs(ComputePointExact(x).y - y);
-        series[1]->append(x, err);
+        err = qAbs(ComputePointExact(xj).y - y);
+        series[1]->append(xj, err);
 
         // add the current local error to the total
-        complete.totalError += err * step;
+        complete.totalError += (err * step);
     }
+
+    // set the legend title for the error series
+    // to make it look like "RungeKutta (0.3257)",
+    // where 0.3257 is the total error
+    sprintf(errName, "RungeKutta (%.4f)", complete.totalError);
+    series[1]->setName(errName);
 
     // initialize the struct
     complete.values = series[0];
     complete.errors = series[1];
-
-    // tell the programmer that we're done here
-    qDebug() << "Computed Runge-Kutta.";
 
     return complete;
 }
@@ -140,7 +154,7 @@ QLineSeries* Computer::ComputeExact(qreal from, qreal to, qreal step)
     series = new QLineSeries();
     series->setName("Exact");
 
-    for (qreal x = from; x < to; x += step) {
+    for (qreal x = from; x <= to; x += step) {
         struct ExactPoint py = ComputePointExact(x);
         if (py.valid) series->append(x, py.y);
     }
