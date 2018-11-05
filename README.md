@@ -2,7 +2,7 @@
 
 ## Description
 
-How? Why? What is used?
+Please look it up in the _deplotter.pdf_, which you can find in the releases section.
 
 ## Compilation
 
